@@ -1,0 +1,22 @@
+{
+  "scripts": [
+    {
+      "name": "AtlasNetStart"
+    },
+    {
+      "name": "garbage"
+    },
+    {
+      "name": "htop"
+    },
+    {
+      "name": "update"
+    },
+    {
+      "name": "upgrade"
+    },
+    {
+      "name": "vscode"
+    }
+  ]
+}
