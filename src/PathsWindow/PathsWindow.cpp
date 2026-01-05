@@ -36,7 +36,26 @@ void PathsWindow::Render()
         "r");
 
 #elif defined(__linux__)
-    FILE *pipe = popen("zenity --file-selection --directory", "r");
+        FILE* pipe = nullptr;
+
+    // Ensure we are in a GUI session
+    const char* display = getenv("DISPLAY");
+    const char* wayland = getenv("WAYLAND_DISPLAY");
+
+    if ((display || wayland) && PlatformOpen::CommandExists("zenity"))
+    {
+        pipe = popen("zenity --file-selection --directory 2>/dev/null", "r");
+    }
+    else if ((display || wayland) && PlatformOpen::CommandExists("kdialog"))
+    {
+        pipe = popen("kdialog --getexistingdirectory 2>/dev/null", "r");
+    }
+    else
+    {
+        fprintf(stderr,
+            "[PathsWindow] No GUI directory picker available "
+            "(install zenity or kdialog)\n");
+    }
 #else
     FILE *pipe = nullptr;
 #endif

@@ -233,7 +233,12 @@ void ButtonsWindow::RenderScriptList()
           {
             if (found->back() != '/')
               found->append("/");
-            OpenInEditor(found.value() + script.name + ".sh");
+
+              #if defined(_WIN32)
+              OpenInEditor(found.value() + script.name + ".sh");
+            #elif defined(__linux__)
+              PlatformOpen::OpenFile(found.value() + script.name + ".sh");
+            #endif
           }
           else
           {

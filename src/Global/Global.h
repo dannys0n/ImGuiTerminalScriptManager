@@ -6,6 +6,8 @@
 #include <imgui.h>
 #include <filesystem>
 #include <optional>
+#include <cstdlib>
+#include <cstdio>
 
 namespace fs = std::filesystem;
 
@@ -65,3 +67,29 @@ static std::optional<std::string> FindScriptByPath(const std::string& name,
 
     return std::nullopt; // script not found anywhere
 }
+
+namespace PlatformOpen
+{
+    static void Run(const std::string& cmd)
+    {
+        int rc = system(cmd.c_str());
+        if (rc != 0)
+            fprintf(stderr, "[PlatformOpen] Failed: %s\n", cmd.c_str());
+    }
+
+    static void OpenFile(const std::string& path)
+    {
+    #if defined(_WIN32)
+        Run("code \"" + path + "\"");
+    #elif defined(__linux__)
+        Run("xdg-open \"" + path + "\"");
+    #endif
+    }
+
+    static bool CommandExists(const char* cmd)
+    {
+    std::string test = std::string("command -v ") + cmd + " >/dev/null 2>&1";
+    return system(test.c_str()) == 0;
+    }
+
+};
